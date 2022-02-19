@@ -1,23 +1,15 @@
 pipeline {
   agent {
     docker {
-      image 'node:6-alpine'
-      args '-p 3000:3000'
+      image 'maven:3-alpine'
+      args '-v /root/.m2:/root/.m2'
     }
 
   }
   stages {
     stage('Build') {
       steps {
-        sh 'npm install'
-      }
-    }
-
-    stage('Deliver') {
-      steps {
-        sh './jenkins/scripts/deliver.sh'
-        input 'Finished using the web site? (Click "Proceed" to continue)'
-        sh './jenkins/scripts/kill.sh'
+        sh 'mvn -B -DskipTests clean package'
       }
     }
 
